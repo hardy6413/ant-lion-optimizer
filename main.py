@@ -28,7 +28,7 @@ if __name__ == '__main__':
     }
 
     epoch = 10
-    pop_size = 50
+    pop_size = 10
     model = OriginalALO(epoch, pop_size)
     best_position, best_fitness = model.solve(problem_dict1)
     history = model.history
