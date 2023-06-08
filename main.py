@@ -1,5 +1,6 @@
 import math
 
+from matplotlib import pyplot as plt
 from mealpy.swarm_based.ALO import OriginalALO
 
 
@@ -7,6 +8,15 @@ def fitness_function(arg):
     result = math.sin((arg[0] + arg[1])) + math.pow((arg[0] - arg[1]), 2) - 1.5 * arg[0] + 2.5 * arg[1] + 1
 
     return result
+
+
+def draw_plot_worst(param):
+    plt.figure()
+    plt.xlabel("Epochs")
+    plt.ylabel("worst values")
+    plt.title("worst values in each epoch")
+    plt.plot([i for i in range(len(param))], param)
+    plt.savefig('worst.png')
 
 
 if __name__ == '__main__':
@@ -17,42 +27,15 @@ if __name__ == '__main__':
         "minmax": "min",
     }
 
-    epoch = 1000
+    epoch = 10
     pop_size = 50
     model = OriginalALO(epoch, pop_size)
     best_position, best_fitness = model.solve(problem_dict1)
+    history = model.history
+    positions = history.list_current_best
+    worst = history.list_current_worst
+    model.history.save_diversity_chart(filename="diversity")
+    model.history.save_local_best_fitness_chart(filename="best")
     print(f"Solution: {best_position}, Fitness: {best_fitness}")
-    print("g")
+    #draw_plot_worst(worst)
 
-"""
-    The original version of: Ant Lion Optimizer (ALO)
-
-    Links:
-        1. https://www.mathworks.com/matlabcentral/fileexchange/49920-ant-lion-optimizer-alo
-        2. https://dx.doi.org/10.1016/j.advengsoft.2015.01.010
-
-    Examples
-    ~~~~~~~~
-    >>> import numpy as np
-    >>> from mealpy.swarm_based.ALO import OriginalALO
-    >>>
-    >>> def fitness_function(solution):
-    >>>     return np.sum(solution**2)
-    >>>
-    >>> problem_dict1 = {
-    >>>     "fit_func": fitness_function,
-    >>>     "lb": [-10, -15, -4, -2, -8],
-    >>>     "ub": [10, 15, 12, 8, 20],
-    >>>     "minmax": "min",
-    >>> }
-    >>>
-    >>> epoch = 1000
-    >>> pop_size = 50
-    >>> model = OriginalALO(epoch, pop_size)
-    >>> best_position, best_fitness = model.solve(problem_dict1)
-    >>> print(f"Solution: {best_position}, Fitness: {best_fitness}")
-
-    References
-    ~~~~~~~~~~
-    [1] Mirjalili, S., 2015. The ant lion optimizer. Advances in engineering software, 83, pp.80-98.
-    """
